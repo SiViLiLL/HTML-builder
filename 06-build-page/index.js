@@ -38,15 +38,25 @@ fsPromises.mkdir(createdPath,{recursive: true}).then(
 						const wayToElement = path.join(originPathAssets, element.name);
 						const wayToCreatedElement = path.join(createdPathAssets, element.name);
 						fsPromises.mkdir(wayToCreatedElement,{recursive: true}).then(
-							fsPromises.readdir(wayToElement,{withFileTypes: true}).then(
-							   function(files){
-							   	files.forEach(element => {
-							   		const wayToElementOriginFile = path.join(wayToElement, element.name);
-							   		const wayTiElementCopyFile = path.join(wayToCreatedElement,element.name)
-				                  fsPromises.copyFile(wayToElementOriginFile, wayTiElementCopyFile)
-							   	})
-							   }
-						   )
+							fsPromises.readdir(wayToCreatedElement).then(
+								function(filesInCreatedPath){
+									if (filesInCreatedPath.length){
+										filesInCreatedPath.forEach(file => {
+											const wayToFile = path.join(wayToCreatedElement, file)
+											fsPromises.unlink(wayToFile)
+										})
+									}
+									fsPromises.readdir(wayToElement,{withFileTypes: true}).then(
+										function(files){
+											files.forEach(element => {
+												const wayToElementOriginFile = path.join(wayToElement, element.name);
+												const wayTiElementCopyFile = path.join(wayToCreatedElement,element.name)
+												fsPromises.copyFile(wayToElementOriginFile, wayTiElementCopyFile)
+											})
+										}
+									)
+								}
+							)
 						)
 					}
 				})
