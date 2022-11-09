@@ -9,6 +9,8 @@ const consoleLine = readline.createInterface({
   output: process.stdout
 });
 
+fs.open(file,'w', (err) => {})
+
 consoleLine.question('Would you like to enter any data?\n', answer => {
 	if (answer === "exit" ) {
 		consoleLine.close()
